@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysh.strawpoll.dao.PollDao">
+    <insert id="addPoll" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO poll VALUES (0,#{title},#{count},#{userId},#{limit})
+    </insert>
+    <update id="updatePeopleCount">
+        UPDATE poll SET count = count + 1 WHERE poll_id = #{id}
+    </update>
+
+    <select id="selectPoll" resultMap="PollResult">
+        SELECT p.poll_id,
+               p.poll_title,
+               p.count   AS poll_count,
+               p.`limit` AS poll_limit,
+               p.userid  AS poll_userid,
+               o.option_id,
+               o.option_title,
+               o.count   AS option_count,
+               o.poll_id as option_poll_id
+        FROM poll p
+                 JOIN `option` o ON p.poll_id = o.poll_id
+        WHERE p.poll_id = #{id}
+
+    </select>
+
+    <resultMap id="PollResult" type="Poll">
+        <id property="id" column="poll_id"/>
+        <result property="title" column="poll_title"/>
+        <result property="count" column="poll_count"/>
+        <result property="userId" column="poll_userid"/>
+        <result property="limit" column="poll_limit"/>
+        <collection property="optionList" ofType="Option">
+            <id property="id" column="option_id"/>
+            <result property="title" column="option_title"/>
+            <result property="count" column="option_count"/>
+            <result property="pollId" column="option_poll_id"/>
+        </collection>
+    </resultMap>
+</mapper>

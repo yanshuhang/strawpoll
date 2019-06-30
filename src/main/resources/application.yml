@@ -1,0 +1,18 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://134.175.120.217:3306/ysh?allowMultiQueries=true
+    username: ysh-d
+    password: Yanshuhang0+
+mybatis:
+  config-location: classpath:/mybatis/config/mybatis-config.xml
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+
+logging:
+  level:
+    com:
+      ysh:
+        strawpoll:
+          dao: debug

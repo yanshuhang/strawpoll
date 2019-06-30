@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysh.strawpoll.dao.OptionDao">
+    <insert id="addOption" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `option` VALUES
+        <foreach collection="list" item="option" separator=",">
+            (0,#{option.title},#{option.pollId},#{option.count})
+        </foreach>
+    </insert>
+    <update id="updateCount">
+        <foreach collection="list" item="id" separator=";">
+            UPDATE `option` SET count = count + 1 WHERE option_id = #{id}
+        </foreach>
+    </update>
+</mapper>

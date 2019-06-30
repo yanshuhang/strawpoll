@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysh.strawpoll.dao.VotedIpDao">
+
+    <insert id="addVotedIp">
+        INSERT INTO voted_ip (user_id, user_ip, option_id, poll_id) VALUES
+            (#{userId},#{userIp},#{optionId},#{pollId})
+    </insert>
+    <insert id="addVotedIPs">
+        INSERT INTO voted_ip (user_id, user_ip, option_id, poll_id) VALUES
+        <foreach collection="list" separator="," item="item">
+            (#{item.userId},#{item.userIp},#{item.optionId},#{item.pollId})
+        </foreach>
+    </insert>
+    <select id="select" resultType="VotedIp">
+        SELECT * FROM voted_ip WHERE poll_id = #{pollId} and user_ip = #{ip}
+    </select>
+
+</mapper>

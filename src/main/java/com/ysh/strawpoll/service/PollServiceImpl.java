@@ -2,13 +2,14 @@ package com.ysh.strawpoll.service;
 
 import com.ysh.strawpoll.dao.OptionDao;
 import com.ysh.strawpoll.dao.PollDao;
-import com.ysh.strawpoll.dao.VotedIpDao;
+import com.ysh.strawpoll.dao.VotedRecordDao;
 import com.ysh.strawpoll.entity.Option;
 import com.ysh.strawpoll.entity.Poll;
-import com.ysh.strawpoll.entity.VotedIp;
+import com.ysh.strawpoll.entity.VoteRecord;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +17,9 @@ import java.util.List;
 public class PollServiceImpl implements PollService {
     private final PollDao pollDao;
     private final OptionDao optionDao;
-    private final VotedIpDao votedIpDao;
+    private final VotedRecordDao votedIpDao;
 
-    public PollServiceImpl(PollDao pollDao, OptionDao optionDao, VotedIpDao votedIpDao) {
+    public PollServiceImpl(PollDao pollDao, OptionDao optionDao, VotedRecordDao votedIpDao) {
         this.pollDao = pollDao;
         this.optionDao = optionDao;
         this.votedIpDao = votedIpDao;
@@ -42,10 +43,10 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public void updateCount(List<VotedIp> votedIpList) {
+    public void updateCount(List<VoteRecord> votedIpList) {
         int pollId = votedIpList.get(0).getPollId();
         ArrayList<Integer> optionIds = new ArrayList<>();
-        for (VotedIp votedIp : votedIpList) {
+        for (VoteRecord votedIp : votedIpList) {
             optionIds.add(votedIp.getOptionId());
         }
         optionDao.updateCount(optionIds);
@@ -54,7 +55,11 @@ public class PollServiceImpl implements PollService {
     }
 
     @Override
-    public List<VotedIp> selectVotedIp(int pollId, String ip) {
-        return votedIpDao.select(pollId, ip);
+    public List<VoteRecord> selectVotedIp(int pollId, int userId, String ip) {
+        // 没有登录的用户使用ip查询
+        if (userId == 0) {
+            return votedIpDao.selectByIp(pollId, ip);
+        }
+        return votedIpDao.selectById(pollId, userId);
     }
 }

@@ -2,10 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ysh.strawpoll.dao.PollDao">
     <insert id="addPoll" keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO poll VALUES (0,#{title},#{count},#{userId},#{limit})
+        INSERT INTO poll (poll_title, count, userid, `limit`)
+        VALUES (#{title}, #{count}, #{userId}, #{limit})
     </insert>
     <update id="updatePeopleCount">
-        UPDATE poll SET count = count + 1 WHERE poll_id = #{id}
+        UPDATE poll
+        SET count = count + 1
+        WHERE poll_id = #{id}
     </update>
 
     <select id="selectPoll" resultMap="PollResult">
@@ -14,14 +17,35 @@
                p.count   AS poll_count,
                p.`limit` AS poll_limit,
                p.userid  AS poll_userid,
+               p.created_time,
                o.option_id,
                o.option_title,
                o.count   AS option_count,
-               o.poll_id as option_poll_id
+               o.poll_id AS option_poll_id
         FROM poll p
                  JOIN `option` o ON p.poll_id = o.poll_id
         WHERE p.poll_id = #{id}
 
+    </select>
+    <select id="getPollByUserId" resultType="com.ysh.strawpoll.entity.Poll">
+        SELECT poll.poll_id    AS id,
+               poll.poll_title AS title,
+               count,
+               userid          AS userId,
+               `limit`,
+               created_time    AS
+                                  createdTime
+        FROM poll
+        WHERE userid = #{userId}
+    </select>
+    <select id="getVotedPollByUserId" resultType="com.ysh.strawpoll.entity.Poll">
+        SELECT poll.poll_id AS id, poll.poll_title AS title, count, `limit`, vote_time AS voteTime
+        FROM poll
+                 JOIN voterecord ON
+                poll.poll_id =
+                voterecord.poll_id
+        WHERE user_id =
+              #{userId}
     </select>
 
     <resultMap id="PollResult" type="Poll">
@@ -30,6 +54,7 @@
         <result property="count" column="poll_count"/>
         <result property="userId" column="poll_userid"/>
         <result property="limit" column="poll_limit"/>
+        <result property="createdTime" column="created_time"/>
         <collection property="optionList" ofType="Option">
             <id property="id" column="option_id"/>
             <result property="title" column="option_title"/>

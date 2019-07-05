@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Result {
+public class ResponseData {
     private String message;
     private List<Object> list;
 }

@@ -1,7 +1,7 @@
 package com.ysh.strawpoll.service;
 
 import com.ysh.strawpoll.entity.Poll;
-import com.ysh.strawpoll.entity.VotedIp;
+import com.ysh.strawpoll.entity.VoteRecord;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface PollService {
 
     Poll selectPoll(int id);
 
-    void updateCount(List<VotedIp> votedIpList);
+    void updateCount(List<VoteRecord> votedIpList);
 
-    List<VotedIp> selectVotedIp(int pollId, String ip);
+    List<VoteRecord> selectVotedIp(int pollId, int userId, String ip);
 }
